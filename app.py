@@ -131,7 +131,7 @@ def match_the_verse_v2(sentence, verse_obj):
     verse_number = verse_obj["verse_number"]
     verse_arr = verse_text.split(" ")
     sentence_arr = sentence.split(" ")
-    distances = np.array([distance(user_sentence, verse_sentence) for user_sentence, verse_sentence in zip(sentence_arr, verse_arr) ])
+    distances = np.array([{'user_sentence':user_sentence, 'score':distance(user_sentence, verse_sentence), 'verse':verse_sentence } for user_sentence, verse_sentence in zip(sentence_arr, verse_arr) ])
     return verse_text, verse_number, distances
 
 def find_the_verse_v2(sentence, surah_number):
@@ -141,7 +141,7 @@ def find_the_verse_v2(sentence, surah_number):
     most_similar_verse_number = np.argmin(distances)
     verse = {
         "surah_number": surah_number,
-        "verse_number": most_similar_verse_number +  1,
+        "verse_number": most_similar_verse_number +  1, # 1 + because list indexing starts from 0
         "text": last_para[most_similar_verse_number],
         "distance": distances[most_similar_verse_number]
     }
