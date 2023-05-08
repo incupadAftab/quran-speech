@@ -118,13 +118,36 @@ def find_the_verse(sentence, surah_number):
     distances = np.array([distance(sentence, s) for s in last_para])
     print(f"distances {distances}")
     most_similar_verse_number = np.argmin(distances)
-    print('found index ' + str(most_similar_verse_number));
+    print('found index ' + str(most_similar_verse_number))
     return last_para[most_similar_verse_number], most_similar_verse_number + 1, distances[most_similar_verse_number]
 
 def match_the_verse(sentence, surah_number, verse_number):
     verse_text = q.quran.get_verse(surah_number, verse_number, with_tashkeel=True)
     dist = distance(sentence, verse_text)
     return verse_text, dist
+
+def match_the_verse_v2(sentence, verse_obj):
+    verse_text = verse_obj["text"]
+    verse_number = verse_obj["verse_number"]
+    verse_arr = verse_text.split(" ")
+    sentence_arr = sentence.split(" ")
+    distances = np.array([distance(user_sentence, verse_sentence) for user_sentence, verse_sentence in zip(sentence_arr, verse_arr) ])
+    return verse_text, verse_number, distances
+
+def find_the_verse_v2(sentence, surah_number):
+    last_para = q.quran.get_sura(surah_number, with_tashkeel=True,basmalah=False)
+    distances = np.array([distance(sentence, s) for s in last_para])
+    print(f"distances {distances}")
+    most_similar_verse_number = np.argmin(distances) + 1
+    verse = {
+        "surah_number": surah_number,
+        "verse_number": most_similar_verse_number,
+        "text": last_para[most_similar_verse_number],
+        "distance": distances[most_similar_verse_number]
+    }
+    return match_the_verse_v2(sentence, verse)
+    # return last_para[most_similar_verse_number], most_similar_verse_number , distances[most_similar_verse_number]
+
 
 @app.route("/recognize/", methods=["POST"])
 def pipeline():
@@ -148,11 +171,7 @@ def pipeline():
     predicted = predict(single_example)
     reshaped_text = arabic_reshaper.reshape(predicted['predicted'])
     bidi_text = get_display(reshaped_text)
-    verse, verse_number, distances = find_the_verse(predicted['predicted'], int(sura_no))
-    # dist, poses = find_match_2(last_para, predicted['predicted'], spaces=last_para_spaces)
-    # print("distance:",dist)
-    # print("number of matches:", len(poses))
-    # print('poses array ' + str(poses))
+    verse, verse_number, distances = find_the_verse_v2(predicted['predicted'], int(sura_no))
 
     response = {
         "transcription": predicted["predicted"],
