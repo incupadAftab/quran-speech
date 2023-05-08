@@ -138,10 +138,10 @@ def find_the_verse_v2(sentence, surah_number):
     last_para = q.quran.get_sura(surah_number, with_tashkeel=True,basmalah=False)
     distances = np.array([distance(sentence, s) for s in last_para])
     print(f"distances {distances}")
-    most_similar_verse_number = np.argmin(distances) + 1
+    most_similar_verse_number = np.argmin(distances)
     verse = {
         "surah_number": surah_number,
-        "verse_number": most_similar_verse_number,
+        "verse_number": most_similar_verse_number +  1,
         "text": last_para[most_similar_verse_number],
         "distance": distances[most_similar_verse_number]
     }
