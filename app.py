@@ -177,7 +177,7 @@ def pipeline():
         "transcription": predicted["predicted"],
         "verse":str(verse),
         "number":str(verse_number),
-        "distance": json.loads(distances),
+        "distance": json.loads(distances, cls=NumpyArrayEncoder),
         "bidi_text":str(bidi_text)
     }
 
