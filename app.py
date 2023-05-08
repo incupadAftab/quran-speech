@@ -132,7 +132,7 @@ def match_the_verse_v2(sentence, verse_obj):
     verse_arr = verse_text.split(" ")
     sentence_arr = sentence.split(" ")
     distances = numpy.array([{'user_sentence':user_sentence, 'score':distance(user_sentence, verse_sentence), 'verse':verse_sentence } for user_sentence, verse_sentence in zip(sentence_arr, verse_arr) ])
-    return verse_text, verse_number, json.dumps(distances, ensure_ascii = False)
+    return verse_text, verse_number, json.dumps(distances, cls=NumpyArrayEncoder)
 
 def find_the_verse_v2(sentence, surah_number):
     last_para = q.quran.get_sura(surah_number, with_tashkeel=True,basmalah=False)
