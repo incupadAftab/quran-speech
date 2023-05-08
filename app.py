@@ -1,7 +1,6 @@
 from werkzeug.utils import secure_filename
 import librosa
 from os import path
-import torchaudio
 import os
 import sounddevice as sd
 import scipy.io.wavfile as wav
